@@ -1,0 +1,175 @@
+	<!DOCTYPE html>
+	<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>customer Management System</title>
+	    <!-- boot strap style link for card -->	 
+	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	    <link rel="stylesheet" href="stylescss.css">
+	   
+	</head>
+	<body>
+	    <div class="container mt-5"> <!-- margin at the top of the container.  -->
+	    	<div>
+	    	<img style="width:140px; height: auto; margin-right: 10px;  padding: -10px 0px 5px 0px;" src="https://dcassetcdn.com/design_img/3658418/172660/172660_20972848_3658418_8ce8fab7_image.png">
+	    	</div>
+	        <h1>Users Card</h1>
+	        <div class="row mt-3" id="search-bar">
+    <div class="col-md-12">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="search-input" placeholder="Search by name">
+            <div class="input-group-append">
+                <button class="btn btn-primary" id="search-button">Search By Name</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+	<!-- ascending and descending sorting -->
+	        <div class="row mt-3" id="arrow-buttons">   
+        <div class="col-md-12"> 
+           <button class="btn btn-primary arrow-button" data-direction="asc" >Asc</button>           
+     	 <button class="btn btn-primary arrow-button" data-direction="desc" style = "float:right" >Desc</button> 
+        </div>
+    </div>
+	        <div class="row mt-3" id="alphabet-buttons">
+	        
+	    <div class="col-md-12">
+	    <!-- a to z alphabet sorting button insertion -->
+	   <button class="btn btn-secondary alphabet-button" data-letter="">All</button>
+	        <button class="btn btn-primary alphabet-button" data-letter="A">A</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="B">B</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="C">C</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="D">D</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="E">E</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="F">F</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="G">G</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="H">H</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="I">I</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="J">J</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="K">K</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="L">L</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="M">M</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="N">N</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="O">O</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="P">P</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="Q">Q</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="R">R</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="S">S</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="T">T</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="U">U</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="V">V</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="W">W</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="X">X</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="Y">Y</button>
+	       <button class="btn btn-primary alphabet-button" data-letter="Z">Z</button>
+	         
+	        <!-- Add more buttons for other letters -->
+	   </div>
+	</div>
+	 
+	        <div class="row mt-3" id="user-cards">
+	            <!-- User cards will be added here -->
+	            <div th:each="Users : ${list}"  class="col-md-3">
+	                <div class="user-card card mt-3">
+	                    <div class="user-card__img">
+	                        <img th:src="@{'data:image/jpeg;base64,' + ${Users.getUserimage2()}}" class="card-img-top" alt="Image" style="height: 150px;">
+	                    
+	                    </div>
+	                    <div class="card-body">
+    <h5 class = "customers" id="customers">Customer</h5>
+	<h4 class="card-title">[[${Users.getUsername()}]]</h4>
+	<p class="card-text">Address : [[${Users.getUseraddress()}]]</p>
+	<p class="card-text"> Mail : [[${Users.getUsermail()}]]</p>
+		<!-- split the phone number by comma seperated & print it as an 'tel' format -->	
+	<p class="card-text" th:if="${Users.getUserphone}" th:each="phonenumber : ${#strings.arraySplit(Users.getUserphone,',')}">ph :
+	<a th:text="${phonenumber}" th:href="'tel:'+${phonenumber}"></a></p>
+	<!-- <p class="card_text">[[${Users.getUserphone()}]]</p> -->		
+    <a href="#" class="btn btn-primary">View profile</a>
+  </div>
+	                </div>
+	            </div>
+	             
+	        </div>
+	        
+	    </div>
+	
+<!-- Include Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>	
+ <script>
+  document.addEventListener("DOMContentLoaded", function () { 
+	   const userCardsContainer = document.getElementById("user-cards"); 
+	   const letterButtons = document.querySelectorAll("#alphabet-buttons .alphabet-button"); 
+	   const arrowButtons = document.querySelectorAll("#arrow-buttons .arrow-button");
+
+	   let selectedLetter = ""; 
+	   let sortDirection = "asc"; 
+	   let currentPage = 1;
+	   const rowsPerPage = 12; 	//12 cards per page
+	   const userCards = Array.from(document.querySelectorAll(".user-card"));
+
+	   letterButtons.forEach(button => {
+	       button.addEventListener("click", () => {		//use function eventlistener for button character sorting.
+	           const letter = button.getAttribute("data-letter");
+	            if (letter === "all") {
+	            	selectedLetter = "";
+	            } 
+	            else {
+	              selectedLetter = letter.toLowerCase();
+	           }
+	            currentPage = 1;
+	            showUsers();
+	           
+	           letterButtons.forEach(btn => btn.classList.remove("active-button"));	     // Remove the active class from all letter buttons
+	           button.classList.add("active-button");	         // Add the active class to the clicked button
+        });
+     });
+
+      arrowButtons.forEach(button => {
+      button.addEventListener("click", () => {
+	                
+  	    arrowButtons.forEach(btn => btn.classList.remove("active-button"));	// Remove the active class from all arrow buttons
+
+    	  sortDirection = button.getAttribute("data-direction");
+      	  currentPage = 1;
+      	  showUsers();
+	                
+     		 button.classList.add("active-button");	// Add the active class to the clicked button
+           });
+       });
+
+	  function showUsers() {
+	      userCardsContainer.innerHTML = ""; // Clear existing content
+	      const startIndex = (currentPage - 1) * rowsPerPage;
+	      const endIndex = startIndex + rowsPerPage;
+
+	     const filteredUserCards = userCards.filter(card => {
+	      	const name = card.querySelector(".card-title").textContent.toLowerCase(); // Convert card name to lowercase
+	        return selectedLetter ? name.startsWith(selectedLetter) : true;
+	     });
+
+	            // Sort the filteredUserCards based on the selected sorting direction
+	      filteredUserCards.sort((cardA, cardB) => {
+	     	 const nameA = cardA.querySelector(".card-title").textContent;
+	     	 const nameB = cardB.querySelector(".card-title").textContent;
+	     	 return sortDirection === "asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+	      });
+
+	      for (let i = startIndex; i < Math.min(endIndex, filteredUserCards.length); i++) {
+	          const colDiv = document.createElement("div");
+	          colDiv.className = "col-md-3";
+	          colDiv.appendChild(filteredUserCards[i]);
+	          userCardsContainer.appendChild(colDiv);
+	          }
+	    }
+	         showUsers();
+   });
+
+	</script>
+	</body>
+	</html>
+	    
+	
